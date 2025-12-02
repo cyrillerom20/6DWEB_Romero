@@ -1,108 +1,114 @@
 <?php
-// Engine Aroma Garage
+// Cyrille Moto Garage
 // Romero, Cyrille Angel S.
 // WD - 202
 
-$storeName = "Cyrille Moto Garage";
-$tagline = "Where Power Meets, Engineered for Cyrille";
-
-$engineScents = [
-    ["name" => "Turbo Exhaust", "notes" => "Smoky, metallic, bold", "occasion" => "Night rides, motor meets, adrenaline moments", "price" => "₱899"],
-    ["name" => "Chrome Pistons", "notes" => "Clean, sharp, cold metal", "occasion" => "Daily rides, casual days, garage work", "price" => "₱799"],
-    ["name" => "Engine Oil Luxe", "notes" => "Warm, deep, smooth oil scent", "occasion" => "Romantic nights, long drives, special events", "price" => "₱999"],
-    ["name" => "Nitro Boost", "notes" => "Citrus burst, energetic, fast", "occasion" => "Racing, road trips, outdoor adventures", "price" => "₱749"]
-];
+require 'engineparts.php';
+include 'header.php';
 ?>
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title><?php echo $storeName; ?></title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1a1a1a;
-            margin: 0;
-            padding: 20px;
-            color: #e6e6e6;
-        }
-        h1 {
-            text-align: center;
-            font-size: 42px;
-            color: #ff4500;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        h3 {
-            text-align: center;
-            color: #ffa366;
-            margin-top: 0;
-            font-style: italic;
-            font-size: 20px;
-        }
-        table {
-            width: 85%;
-            margin: 40px auto;
-            border-collapse: collapse;
-            background: #262626;
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th {
-            background: #ff4500;
-            color: #fff;
-            padding: 14px;
-            font-size: 20px;
-            text-transform: uppercase;
-        }
-        td {
-            padding: 14px;
-            font-size: 18px;
-            border-bottom: 1px solid #333;
-            color: #e6e6e6;
-        }
-        tr:hover {
-            background: #333;
-        }
-        .romantic {
-            color: #ff66c4;
-            font-weight: bold;
-        }
-        .price {
-            color: #00e600;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <h1><?php echo $storeName; ?></h1>
-    <h3><?php echo $tagline; ?></h3>
-
-    <table>
-        <tr>
-            <th>Engine Parts</th>
-            <th>Notes</th>
-            <th>Occasion</th>
-            <th>Price</th>
-        </tr>
-
-        <?php
-            foreach ($engineScents as $engine) {
-                echo "<tr>";
-                echo "<td>{$engine['name']}</td>";
-                echo "<td>{$engine['notes']}</td>";
-
-                if (strpos($engine['occasion'], 'romantic') !== false) {
-                    echo "<td class='romantic'>{$engine['occasion']}</td>";
-                } else {
-                    echo "<td>{$engine['occasion']}</td>";
-                }
-
-                echo "<td class='price'>{$engine['price']}</td>";
-                echo "</tr>";
+    <head>
+        <title><?php echo $storeName; ?></title>
+        <style>
+            body {
+                background: linear-gradient(to right, #0f0f0f, #1c1c1c);
+                font-family: 'Montserrat', sans-serif;
+                color: #e0e0e0;
+                text-align: center;
+                margin: 0;
+                padding: 0;
             }
-        ?>
-    </table>
-</body>
+
+            h1 {
+                font-size: 3em;
+                color: #ff4500;
+                letter-spacing: 2px;
+                margin-top: 30px;
+            }
+
+            p {
+                font-family: 'Georgia', serif;
+                font-size: 1.2em;
+                color: #b0b0b0;
+                margin-bottom: 20px;
+            }
+
+            table {
+                margin: auto;
+                border-collapse: collapse;
+                width: 80%;
+                background-color: #121212;
+                box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            }
+
+            th, td {
+                border: 1px solid #444;
+                padding: 15px;
+                font-size: 1.1em;
+                text-align: center;
+            }
+
+            th {
+                background-color: #ff4500;
+                color: #fff;
+                text-transform: uppercase;
+            }
+
+            td { color: #e0e0e0; }
+
+            tr:hover {
+                background-color: #1f1f1f;
+                transition: 0.3s;
+            }
+
+            .highlight-warm { color: #ffb74d; }
+            .highlight-cool { color: #64b5f6; }
+            .usage-performance { color: #00e600; font-weight: bold; }
+        </style>
+    </head>
+
+    <body>
+
+        <table>
+            <tr>
+                <th>Engine Part</th>
+                <th>Specifications</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Best Use</th>
+            </tr>
+
+            <?php
+                foreach ($engineParts as $part) {
+                    echo "<tr>";
+                    echo "<td>{$part['name']}</td>";
+                    echo "<td>{$part['specs']}</td>";
+
+                    $discRate = 0.10;
+                    $discountedPrice = $part['price'] - ($part['price'] * $discRate);
+                    echo "<td>₱{$part['price']} <br><span style='color:#ff4500; font-weight: bold;'>₱{$discountedPrice} (Sale)</span></td>";
+
+                    if(strpos($part['category'], "High Performance") !== false) {
+                        echo "<td class='highlight-warm'>{$part['category']}</td>";
+                    }
+                    elseif(strpos($part['category'], "Cooling") !== false) {
+                        echo "<td class='highlight-cool'>{$part['category']}</td>";
+                    }
+                    else {
+                        echo "<td>{$part['category']}</td>";
+                    }
+
+                    if(strpos($part['usage'], "Racing") !== false) {
+                        echo "<td class='usage-performance'>{$part['usage']}</td>";
+                    } else {
+                        echo "<td>{$part['usage']}</td>";
+                    }
+
+                    echo "</tr>";
+                }
+            ?>
+        </table>
+    </body>
 </html>
