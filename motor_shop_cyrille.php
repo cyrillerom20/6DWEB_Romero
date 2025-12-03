@@ -28,6 +28,22 @@ include 'header.php';
                 margin-top: 30px;
             }
 
+              nav {
+            margin-top: 15px;
+            }
+
+            nav a {
+            color: #ff4500;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 1.2em;
+            }
+
+            nav a:hover {
+            color: #ffaa66;
+            }
+
             p {
                 font-family: 'Georgia', serif;
                 font-size: 1.2em;
@@ -66,49 +82,101 @@ include 'header.php';
             .highlight-warm { color: #ffb74d; }
             .highlight-cool { color: #64b5f6; }
             .usage-performance { color: #00e600; font-weight: bold; }
+            .reorder-yes { color: #ff3333; font-weight: bold; }
+            .reorder-no { color: #00ff99; }
         </style>
     </head>
 
     <body>
+
+        <nav>
+            <a href="index.php">Home</a>
+            <a href="sale.php">Sale</a>
+            <a href="about.php">Order</a>
+        </nav>
 
         <table>
             <tr>
                 <th>Engine Part</th>
                 <th>Specifications</th>
                 <th>Price</th>
+                <th>Stock</th>
+                <th>Reorder?</th>
+                <th>Total Stock Value (₱)</th>
+                <th>Tax Due (₱)</th>
                 <th>Category</th>
                 <th>Best Use</th>
             </tr>
 
             <?php
-                foreach ($engineParts as $part) {
-                    echo "<tr>";
-                    echo "<td>{$part['name']}</td>";
-                    echo "<td>{$part['specs']}</td>";
 
-                    $discRate = 0.10;
-                    $discountedPrice = $part['price'] - ($part['price'] * $discRate);
-                    echo "<td>₱{$part['price']} <br><span style='color:#ff4500; font-weight: bold;'>₱{$discountedPrice} (Sale)</span></td>";
+        // 1. Reorder point for the functions
+        function reorder_message($stock) {
+            return ($stock < 10)
+                ? "<span class='reorder-yes'>Yes</span>"
+                : "<span class='reorder-no'>No</span>";
+        }
 
-                    if(strpos($part['category'], "High Performance") !== false) {
-                        echo "<td class='highlight-warm'>{$part['category']}</td>";
-                    }
-                    elseif(strpos($part['category'], "Cooling") !== false) {
-                        echo "<td class='highlight-cool'>{$part['category']}</td>";
-                    }
-                    else {
-                        echo "<td>{$part['category']}</td>";
-                    }
+        // 2. Total value of remaining stock
+        function total_stock_value($price, $stock) {
+            return $price * $stock;
+        }
 
-                    if(strpos($part['usage'], "Racing") !== false) {
-                        echo "<td class='usage-performance'>{$part['usage']}</td>";
-                    } else {
-                        echo "<td>{$part['usage']}</td>";
-                    }
+        // 3. Total tax due for all remaining stock
+        function total_tax_due($price, $stock, $taxPercent) {
+            $totalVal = $price * $stock;
+            return $totalVal * ($taxPercent / 100);
+        }
 
-                    echo "</tr>";
-                }
-            ?>
-        </table>
-    </body>
+        // DISPLAY ENGINE PARTS
+        foreach ($engineParts as $part) {
+
+            $partName = $part["name"];
+            $specs = $part["specs"];
+            $price = $part["price"];
+            $stock = $part["stock"];
+            $category = $part["category"];
+            $usage = $part["usage"];
+            $tax = $part["tax"];
+
+            echo "<tr>";
+
+            echo "<td>$partName</td>";
+            echo "<td>$specs</td>";
+            echo "<td>₱" . number_format($price, 2) . "</td>";
+            echo "<td>$stock</td>";
+
+            echo "<td>" . reorder_message($stock) . "</td>";
+
+            // total stock value
+            $value = total_stock_value($price, $stock);
+            echo "<td>₱" . number_format($value, 2) . "</td>";
+
+            // tax due
+            $taxDue = total_tax_due($price, $stock, $tax);
+            echo "<td>₱" . number_format($taxDue, 2) . "</td>";
+
+            // category colors
+            if (strpos($category, "High Performance") !== false) {
+                echo "<td class='highlight-warm'>$category</td>";
+            } elseif (strpos($category, "Cooling") !== false) {
+                echo "<td class='highlight-cool'>$category</td>";
+            } else {
+                echo "<td>$category</td>";
+            }
+
+            // usage highlight
+            if (strpos($usage, "Racing") !== false) {
+                echo "<td class='usage-performance'>$usage</td>";
+            } else {
+                echo "<td>$usage</td>";
+            }
+
+            echo "</tr>";
+        }
+    ?>
+</table>
+
+</body>
 </html>
+
