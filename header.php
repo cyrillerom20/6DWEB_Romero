@@ -1,5 +1,5 @@
 <?php
-$storeName = "Cyrille Moto Garage";
+$storeName = "Cyrille Motor Shop";
 $tagline = "Where Power Meets Performance – Engineered for Cyrille";
 ?>
 
@@ -9,3 +9,4 @@ $tagline = "Where Power Meets Performance – Engineered for Cyrille";
 <p style="color:#ff4500; font-size:1.5em; font-weight:bold;">
     Year-End Sale: Up to 10% Off All Motor Parts!
 </p>
+
