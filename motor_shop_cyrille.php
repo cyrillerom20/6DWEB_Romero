@@ -4,6 +4,7 @@
 // WD - 202
 
 require 'engineparts.php';
+require 'functions.php';
 include 'header.php';
 ?>
 
@@ -26,6 +27,22 @@ include 'header.php';
                 color: #ff4500;
                 letter-spacing: 2px;
                 margin-top: 30px;
+            }
+            
+            nav {
+            margin-top: 15px;
+            }
+
+            nav a {
+            color: #ff4500;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 1.2em;
+            }
+
+            nav a:hover {
+            color: #ffaa66;
             }
 
             p {
@@ -61,54 +78,78 @@ include 'header.php';
             tr:hover {
                 background-color: #1f1f1f;
                 transition: 0.3s;
-            }
+}
 
             .highlight-warm { color: #ffb74d; }
             .highlight-cool { color: #64b5f6; }
             .usage-performance { color: #00e600; font-weight: bold; }
+            .reorder-yes { color: #ff3333; font-weight: bold; }
+            .reorder-no { color: #00ff99; }
+
         </style>
     </head>
 
     <body>
+
+    <nav>
+    <a href="motor_shop_cyrille.php">Home</a>
+    <a href="sale.php">Sale</a>
+    <a href="order.php">Order</a>
+    </nav>
 
         <table>
             <tr>
                 <th>Engine Part</th>
                 <th>Specifications</th>
                 <th>Price</th>
+                <th>Stock</th>
+                <th>Reorder?</th>
+                <th>Total Stock Value (₱)</th>
+                <th>Tax Due (₱)</th>
                 <th>Category</th>
                 <th>Best Use</th>
             </tr>
 
             <?php
-                foreach ($engineParts as $part) {
-                    echo "<tr>";
-                    echo "<td>{$part['name']}</td>";
-                    echo "<td>{$part['specs']}</td>";
+        
+        foreach ($engineParts as $part) {
+            
+            $price = $part["price"];
+            $stock = $part["stock"];
+            $tax = $part["tax"];
 
-                    $discRate = 0.10;
-                    $discountedPrice = $part['price'] - ($part['price'] * $discRate);
-                    echo "<td>₱{$part['price']} <br><span style='color:#ff4500; font-weight: bold;'>₱{$discountedPrice} (Sale)</span></td>";
+            echo "<tr>";
+            echo "<td>{$part['name']}</td>";
+            echo "<td>{$part['specs']}</td>";
+            echo "<td>₱" . number_format($price, 2) . "</td>";
+            echo "<td>$stock</td>";
 
-                    if(strpos($part['category'], "High Performance") !== false) {
-                        echo "<td class='highlight-warm'>{$part['category']}</td>";
-                    }
-                    elseif(strpos($part['category'], "Cooling") !== false) {
-                        echo "<td class='highlight-cool'>{$part['category']}</td>";
-                    }
-                    else {
-                        echo "<td>{$part['category']}</td>";
-                    }
+            echo "<td>" . reorder_message($stock) . "</td>";
 
-                    if(strpos($part['usage'], "Racing") !== false) {
-                        echo "<td class='usage-performance'>{$part['usage']}</td>";
-                    } else {
-                        echo "<td>{$part['usage']}</td>";
-                    }
+            $value = total_stock_value($price, $stock);
+            echo "<td>₱" . number_format($value, 2) . "</td>";
 
-                    echo "</tr>";
-                }
-            ?>
-        </table>
-    </body>
+            $taxDue = total_tax_due($price, $stock, $tax);
+            echo "<td>₱" . number_format($taxDue, 2) . "</td>";
+
+            if (strpos($part['category'], "High Performance") !== false) {
+                echo "<td class='highlight-warm'>{$part['category']}</td>";
+            } elseif (strpos($part['category'], "Cooling") !== false) {
+                echo "<td class='highlight-cool'>{$part['category']}</td>";
+            } else {
+                echo "<td>{$part['category']}</td>";
+            }
+
+            if (strpos($part['usage'], "Racing") !== false) {
+                echo "<td class='usage-performance'>{$part['usage']}</td>";
+            } else {
+                echo "<td>{$part['usage']}</td>";
+            }
+
+            echo "</tr>";
+        }
+    ?>
+</table>
+
+</body>
 </html>
