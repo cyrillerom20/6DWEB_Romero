@@ -148,15 +148,15 @@ include 'header.php';
 
             echo "<td>" . reorder_message($stock) . "</td>";
 
-            // total stock value
+            //total stock value
             $value = total_stock_value($price, $stock);
             echo "<td>₱" . number_format($value, 2) . "</td>";
 
-            // tax due
+            //tax due
             $taxDue = total_tax_due($price, $stock, $tax);
             echo "<td>₱" . number_format($taxDue, 2) . "</td>";
 
-            // category colors
+            //category colors
             if (strpos($category, "High Performance") !== false) {
                 echo "<td class='highlight-warm'>$category</td>";
             } elseif (strpos($category, "Cooling") !== false) {
@@ -165,7 +165,6 @@ include 'header.php';
                 echo "<td>$category</td>";
             }
 
-            // usage highlight
             if (strpos($usage, "Racing") !== false) {
                 echo "<td class='usage-performance'>$usage</td>";
             } else {
