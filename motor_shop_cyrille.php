@@ -1,5 +1,5 @@
 <?php
-// Cyrille Moto Garage
+// Cyrille Moto Garage — Stock Monitor
 // Romero, Cyrille Angel S.
 // WD - 202
 
@@ -9,108 +9,104 @@ include 'header.php';
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title><?php echo $storeName; ?></title>
-        <style>
-            body {
-                background: linear-gradient(to right, #0f0f0f, #1c1c1c);
-                font-family: 'Montserrat', sans-serif;
-                color: #e0e0e0;
-                text-align: center;
-                margin: 0;
-                padding: 0;
-            }
+<head>
+    <title><?php echo $storeName; ?></title>
 
-            h1 {
-                font-size: 3em;
-                color: #ff4500;
-                letter-spacing: 2px;
-                margin-top: 30px;
-            }
+    <style>
+        body {
+            background: linear-gradient(to right, #0f0f0f, #1c1c1c);
+            font-family: 'Montserrat', sans-serif;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
 
-              nav {
+        header {
+            padding: 25px;
+            color: #fff;
+            background: #111;
+            border-bottom: 2px solid #ff4500;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 5px;
+            color: #ff4500;
+        }
+
+        nav {
             margin-top: 15px;
-            }
+        }
 
-            nav a {
+        nav a {
             color: #ff4500;
             text-decoration: none;
             font-weight: bold;
             margin: 0 15px;
             font-size: 1.2em;
-            }
+        }
 
-            nav a:hover {
+        nav a:hover {
             color: #ffaa66;
-            }
+        }
 
-            p {
-                font-family: 'Georgia', serif;
-                font-size: 1.2em;
-                color: #b0b0b0;
-                margin-bottom: 20px;
-            }
+        table {
+            width: 90%;
+            margin: 40px auto;
+            border-collapse: collapse;
+            background: #121212;
+            box-shadow: 0 0 18px rgba(0,0,0,0.6);
+        }
 
-            table {
-                margin: auto;
-                border-collapse: collapse;
-                width: 80%;
-                background-color: #121212;
-                box-shadow: 0 0 15px rgba(0,0,0,0.6);
-            }
+        th, td {
+            border: 1px solid #444;
+            padding: 15px;
+            font-size: 1.1em;
+        }
 
-            th, td {
-                border: 1px solid #444;
-                padding: 15px;
-                font-size: 1.1em;
-                text-align: center;
-            }
+        th {
+            background-color: #ff4500;
+            color: white;
+            text-transform: uppercase;
+        }
 
-            th {
-                background-color: #ff4500;
-                color: #fff;
-                text-transform: uppercase;
-            }
+        tr:hover {
+            background-color: #1f1f1f;
+            transition: 0.3s;
+        }
 
-            td { color: #e0e0e0; }
+        .highlight-warm { color: #ffb74d; font-weight: bold; }
+        .highlight-cool { color: #64b5f6; font-weight: bold; }
+        .usage-performance { color: #00ff66; font-weight: bold; }
+        .reorder-yes { color: #ff3333; font-weight: bold; }
+        .reorder-no { color: #00ff99; }
+    </style>
+</head>
 
-            tr:hover {
-                background-color: #1f1f1f;
-                transition: 0.3s;
-            }
+<body>
 
-            .highlight-warm { color: #ffb74d; }
-            .highlight-cool { color: #64b5f6; }
-            .usage-performance { color: #00e600; font-weight: bold; }
-            .reorder-yes { color: #ff3333; font-weight: bold; }
-            .reorder-no { color: #00ff99; }
-        </style>
-    </head>
+<nav>
+    <a href="index.php">Home</a>
+    <a href="sale.php">Sale</a>
+    <a href="about.php">Order</a>
+</nav>
 
-    <body>
+<table>
+    <tr>
+        <th>Engine Part</th>
+        <th>Specifications</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Reorder?</th>
+        <th>Total Stock Value (₱)</th>
+        <th>Tax Due (₱)</th>
+        <th>Category</th>
+        <th>Best Use</th>
+    </tr>
 
-        <nav>
-            <a href="index.php">Home</a>
-            <a href="sale.php">Sale</a>
-            <a href="about.php">Order</a>
-        </nav>
-
-        <table>
-            <tr>
-                <th>Engine Part</th>
-                <th>Specifications</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Reorder?</th>
-                <th>Total Stock Value (₱)</th>
-                <th>Tax Due (₱)</th>
-                <th>Category</th>
-                <th>Best Use</th>
-            </tr>
-
-            <?php
-
-        // 1. Reorder point for the functions
+    <?php
+        // 1. Reorder point function
         function reorder_message($stock) {
             return ($stock < 10)
                 ? "<span class='reorder-yes'>Yes</span>"
@@ -148,15 +144,15 @@ include 'header.php';
 
             echo "<td>" . reorder_message($stock) . "</td>";
 
-            //total stock value
+            // total stock value
             $value = total_stock_value($price, $stock);
             echo "<td>₱" . number_format($value, 2) . "</td>";
 
-            //tax due
+            // tax due
             $taxDue = total_tax_due($price, $stock, $tax);
             echo "<td>₱" . number_format($taxDue, 2) . "</td>";
 
-            //category colors
+            // category colors
             if (strpos($category, "High Performance") !== false) {
                 echo "<td class='highlight-warm'>$category</td>";
             } elseif (strpos($category, "Cooling") !== false) {
@@ -178,4 +174,5 @@ include 'header.php';
 
 </body>
 </html>
+
 
